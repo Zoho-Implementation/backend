@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+    php:
+        build:
+            context: .
+            dockerfile: ./docker/php/Dockerfile
+        container_name: php-app
+        restart: unless-stopped
+        ports:
+            -   "9000:9000"
+        volumes:
+            - .:/var/www/html
+        networks:
+            - my-network
+    nginx:
+        build:
+            context: .
+            dockerfile: ./docker/nginx/Dockerfile
+        container_name: nginx-app
+        restart: unless-stopped
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - .:/var/www/html
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d
+        networks:
+            - my-network
+        depends_on:
+            - php
+
+networks:
+    my-network:
+        driver: bridge
