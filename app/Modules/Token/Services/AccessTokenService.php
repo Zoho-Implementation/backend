@@ -4,6 +4,7 @@ namespace App\Modules\Token\Services;
 
 use App\Helpers\UrlList;
 use App\Modules\Token\Models\Token;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class AccessTokenService
@@ -38,11 +39,25 @@ class AccessTokenService
                     'grant_type' => self::REFRESH_TOKEN
                 ]);
 
-        $token = Token::where('refresh_token', $refreshToken)->firsh();
-        $token->access_token = $response->access_token;
+        $data = $response->json();
+
+        $token = Token::where('refresh_token', $refreshToken)->first();
+        $token->access_token = $data['access_token'];
         $token->save();
 
         return json_decode($response->body());
+    }
+
+    public static function refreshWithCallback(
+        string $bearer,
+        Request $request,
+        callable $callback
+    ): mixed {
+        $expiredToken = substr($bearer, 7);
+        $currentToken = Token::where("access_token", $expiredToken)->first();
+        $newToken = AccessTokenService::refresh($currentToken->refresh_token);
+        $request->headers->set("Authorization", "Bearer $newToken->access_token");
+        return $callback($request);
     }
 
 }
