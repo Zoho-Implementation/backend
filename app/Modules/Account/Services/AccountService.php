@@ -13,15 +13,15 @@ class AccountService
 
     public function create(AccountRequest $request): JsonResponse
     {
-        $bearer = $request->header("Authorization");
-        $response = $this->sendCreateRequest($request, $bearer);
+        $token = substr($request->header("Authorization"), 7);
+        $response = $this->sendCreateRequest($request, $token);
 
         $data = $response->json();
 
         if (!empty($data["status"]) and $data["status"] === "error") {
             if ($data["code"] === "INVALID_TOKEN") {
                 AccessTokenService::refreshWithCallback(
-                    $bearer,
+                    $token,
                     $request,
                     function($param) {
                         $this->create($param);
@@ -31,16 +31,16 @@ class AccountService
         }
 
         return response()->json(["data" => [
-            "status" => "success"
-        ]], 201);
+            "status" => "success",
+        ], 'token' => substr($request->header("Authorization"), 7)], 201);
     }
 
     private function sendCreateRequest(
         AccountRequest $request,
-        string $bearer
+        string $token
     ): object {
         return Http::withHeaders([
-            "Authorization" => $bearer,
+            "Authorization" => "Bearer $token",
             "Content-Type" => "application/json"
         ])
             ->asJson()

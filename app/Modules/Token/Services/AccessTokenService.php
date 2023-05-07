@@ -49,12 +49,11 @@ class AccessTokenService
     }
 
     public static function refreshWithCallback(
-        string $bearer,
+        string $token,
         Request $request,
         callable $callback
     ): mixed {
-        $expiredToken = substr($bearer, 7);
-        $currentToken = Token::where("access_token", $expiredToken)->first();
+        $currentToken = Token::where("access_token", $token)->first();
         $newToken = AccessTokenService::refresh($currentToken->refresh_token);
         $request->headers->set("Authorization", "Bearer $newToken->access_token");
         return $callback($request);
