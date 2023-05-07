@@ -6,6 +6,7 @@ class Constants
 {
     // Methods
     const METHOD_GET = 'GET';
+    const METHOD_POST = 'POST';
     // Codes
     const INTERNAL_SERVER_ERROR = 500;
     // Messages
