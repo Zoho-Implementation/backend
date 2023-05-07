@@ -23,9 +23,9 @@ class AccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'Website' => 'required|string',
-            'Phone' => 'required|string',
-            'Account_Name' => 'required|string',
+            'website' => 'required|string',
+            'phone' => 'required|string',
+            'account_name' => 'required|string',
         ];
     }
 }
