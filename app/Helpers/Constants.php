@@ -4,11 +4,8 @@ namespace App\Helpers;
 
 class Constants
 {
-    // Methods
-    const METHOD_GET = 'GET';
-    const METHOD_POST = 'POST';
     // Codes
-    const INTERNAL_SERVER_ERROR = 500;
+    const UNAUTHORIZED_CODE = 401;
     // Messages
-    const SOMETHING_WENT_WRONG_MESSAGE = 'something went wrong';
+    const INVALID_AUTH_MESSAGE = 'invalid auth code';
 }

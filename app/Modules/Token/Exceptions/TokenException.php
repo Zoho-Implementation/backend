@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Exceptions;
+namespace App\Modules\Token\Exceptions;
 
-class HttpQueryBuilderException extends \Exception
+class TokenException extends \Exception
 {
     public function __construct(string $message = "", int $code = 0)
     {

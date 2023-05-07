@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Services;
+namespace App\Modules\Token\Services;
 
 use App\Helpers\UrlList;
+use App\Modules\Token\Models\Token;
 use Illuminate\Support\Facades\Http;
 
 class AccessTokenService
@@ -36,6 +37,11 @@ class AccessTokenService
                     'refresh_token' => $refreshToken,
                     'grant_type' => self::REFRESH_TOKEN
                 ]);
+
+        $token = Token::where('refresh_token', $refreshToken)->firsh();
+        $token->access_token = $response->access_token;
+        $token->save();
+
         return json_decode($response->body());
     }
 
