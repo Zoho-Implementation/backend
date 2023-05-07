@@ -15,3 +15,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/account', [\App\Modules\Account\Controllers\AccountController::class, 'create']);
+Route::post('/token/generate', [\App\Modules\Token\Controllers\TokenController::class, 'generateToken']);
