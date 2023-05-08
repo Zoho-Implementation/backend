@@ -32,7 +32,7 @@ class AccountService
 
         return response()->json(["data" => [
             "status" => "success",
-        ], 'token' => substr($request->header("Authorization"), 7)], 201);
+        ], 'token' => $token], 201);
     }
 
     private function sendCreateRequest(

@@ -14,5 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/account', [\App\Modules\Account\Controllers\AccountController::class, 'getAll']);
 Route::post('/account', [\App\Modules\Account\Controllers\AccountController::class, 'create']);
+
 Route::post('/token/generate', [\App\Modules\Token\Controllers\TokenController::class, 'generateToken']);
