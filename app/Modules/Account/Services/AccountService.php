@@ -5,6 +5,7 @@ namespace App\Modules\Account\Services;
 use App\Helpers\UrlList;
 use App\Modules\Account\Requests\AccountRequest;
 use App\Modules\Token\Services\AccessTokenService;
+use App\Services\RequestServices;
 use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -41,7 +42,7 @@ class AccountService
     public function getAll(Request $request): JsonResponse
     {
         $token = substr($request->header("Authorization"), 7);
-        $response = $this->sendGetAllRequest($token);
+        $response = RequestServices::getAll($token, UrlList::GET_ACCOUNTS);
 
         if (!empty($response->status) and $response->status == "error") {
             if ($response->code == "INVALID_TOKEN") {
@@ -49,7 +50,7 @@ class AccountService
                     $token,
                     $request,
                     function($token, $request) {
-                        return $this->sendGetAllRequest($token);
+                        return RequestServices::getAll($token, UrlList::GET_ACCOUNTS);
                     }
                 );
             }
@@ -108,28 +109,6 @@ class AccountService
         return $response;
     }
 
-    public function sendGetAllRequest(string $token): object
-    {
-        $client = new Client();
-
-        $headers = [
-            'Authorization' => 'Bearer ' .$token,
-            'Content-Type' => 'application/json',
-        ];
-
-        $response = $client->request('GET', env("ZOHO_API_DOMAIN") . UrlList::GET_ACCOUNTS, [
-            'headers' => $headers,
-            'http_errors' => false
-        ]);
-
-
-        $body = $response->getBody()->getContents();
-        $response = json_decode($body);
-        $response->token = $token;
-
-        return $response;
-    }
-
     private function prepareAccounts(array $accounts): array
     {
         $accountsList = [];
@@ -143,6 +122,5 @@ class AccountService
 
         return $accountsList;
     }
-
 
 }
