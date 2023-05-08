@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,5 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/account', [\App\Modules\Account\Controllers\AccountController::class, 'getAll']);
 Route::post('/account', [\App\Modules\Account\Controllers\AccountController::class, 'create']);
+
+Route::get('/deals', [\App\Modules\Deal\Controllers\DealController::class, 'getAll']);
+Route::post('/deals', [\App\Modules\Deal\Controllers\DealController::class, 'create']);
 
 Route::post('/token/generate', [\App\Modules\Token\Controllers\TokenController::class, 'generateToken']);
