@@ -6,6 +6,7 @@ use App\Helpers\UrlList;
 use App\Modules\Token\Models\Token;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 
 class AccessTokenService
 {
@@ -40,7 +41,6 @@ class AccessTokenService
                 ]);
 
         $data = $response->json();
-
         $token = Token::where('refresh_token', $refreshToken)->first();
         $token->access_token = $data['access_token'];
         $token->save();
@@ -52,11 +52,12 @@ class AccessTokenService
         string $token,
         Request $request,
         callable $callback
-    ): mixed {
+    ) {
         $currentToken = Token::where("access_token", $token)->first();
         $newToken = AccessTokenService::refresh($currentToken->refresh_token);
         $request->headers->set("Authorization", "Bearer $newToken->access_token");
-        return $callback($request);
+        Session::put('token', $newToken->access_token);
+        return call_user_func($callback, $newToken->access_token, $request);
     }
 
 }
